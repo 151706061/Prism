@@ -2,6 +2,8 @@ using System;
 using System.Windows.Input;
 using Xunit;
 using Prism.Commands;
+using System.Threading;
+using Xunit.Sdk;
 
 namespace Prism.Tests.Mvvm
 {
@@ -146,6 +148,7 @@ namespace Prism.Tests.Mvvm
             GC.Collect();
 
             delegateCommand.RaiseCanExecuteChanged();
+
             Assert.True(multiCommand.CanExecuteChangedRaised);
         }
 
@@ -551,7 +554,7 @@ namespace Prism.Tests.Mvvm
             return true;
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged = delegate { };
 
         public void Execute(object parameter)
         {

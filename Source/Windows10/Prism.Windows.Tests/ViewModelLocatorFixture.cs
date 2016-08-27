@@ -7,21 +7,17 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Prism.Mvvm;
 using Prism.Windows.Mvvm;
+using Prism.Windows.Tests.Utilities;
 
 namespace Prism.Windows.Tests
 {
     [TestClass]
     public class ViewModelLocatorFixture
     {
-        public IAsyncAction ExecuteOnUIThread(DispatchedHandler action)
-        {
-            return CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, action);
-        }
-
         [TestMethod]
         public async Task AutoWireViewModel_With_Factory_Registration()
         {
-            await ExecuteOnUIThread(() =>
+            await DispatcherHelper.ExecuteOnUIThread(() =>
             {
                 var page = new MockPage();
 
@@ -39,7 +35,7 @@ namespace Prism.Windows.Tests
         [TestMethod]
         public async Task AutoWireViewModel_With_Custom_Resolver()
         {
-            await ExecuteOnUIThread(() =>
+            await DispatcherHelper.ExecuteOnUIThread(() =>
             {
                 var page = new MockPage();
 
@@ -64,7 +60,7 @@ namespace Prism.Windows.Tests
         [TestMethod]
         public async Task AutoWireViewModel_With_Custom_Resolver_And_Factory()
         {
-            await ExecuteOnUIThread(() =>
+            await DispatcherHelper.ExecuteOnUIThread(() =>
             {
                 var page = new MockPage();
 
@@ -82,7 +78,7 @@ namespace Prism.Windows.Tests
                 ViewModelLocationProvider.SetDefaultViewModelFactory((viewModelType) =>
                 {
                     // The ViewModel has a constructor with no parameters
-                    return Activator.CreateInstance(viewModelType) as ViewModel;
+                    return Activator.CreateInstance(viewModelType) as ViewModelBase;
                 });
 
                 // Fire AutoWireViewModelChanged
