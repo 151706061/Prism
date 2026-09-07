@@ -1,14 +1,10 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
-using Avalonia.Markup.Xaml;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Navigation.Regions;
 using SampleApp.Services;
 using SampleApp.ViewModels;
 using SampleApp.Views;
+using static Microsoft.IO.RecyclableMemoryStreamManager;
 
 namespace SampleApp;
 
@@ -20,6 +16,17 @@ public partial class App : PrismApplication
 
         // Required when overriding Initialize
         base.Initialize();
+
+#if DEBUG
+        // Replaces the old this.AttachDevTools();
+        // NOTE: This requires connection to, http://127.0.0.1:29414/ and some IT firewalls may block it.
+        // Reference: https://docs.avaloniaui.net/tools/developer-tools/attaching-to-the-remote-tool
+        this.AttachDeveloperTools();
+        ////{
+        ////    // Change the initialization key gesture (Default is F12)
+        ////    options.Gesture = Avalonia.Input.KeyGesture.Parse("F11");
+        ////});
+#endif
     }
 
     protected override AvaloniaObject CreateShell()
@@ -29,13 +36,16 @@ public partial class App : PrismApplication
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
-        // Register your Services, Views, Dialogs, etc. here
-
         // Services
         containerRegistry.RegisterSingleton<INotificationService, NotificationService>();
 
+        // Views - Dialogs
+        containerRegistry.RegisterDialog<MessageBoxView, MessageBoxViewModel>();
+        ////containerRegistry.RegisterDialogWindow<CustomDialogWindow>(nameof(CustomDialogWindow));
+
         // Views - Region Navigation
         containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>();
+        containerRegistry.RegisterForNavigation<DialogSampleView, DialogSampleViewModel>();
         containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
         containerRegistry.RegisterForNavigation<SubSettingsView, SubSettingsViewModel>();
     }
